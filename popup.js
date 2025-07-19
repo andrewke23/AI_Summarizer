@@ -1,5 +1,3 @@
-import OpenAI from 'openai';
-
 console.log('Popup script loaded');
 
 // Wait for the DOM to be ready
@@ -57,8 +55,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await chrome.tabs.sendMessage(tab.id, {action: "getText"});
                 console.log('Got text from page:', !!response.text);
                 
-                const summary = document.getElementById('summary');
-                summary.textContent = response.text;
+                const url = 'https://api.openai.com/v1/chat/completions';
+                const headers = {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${data.openai_api_key}`
+                };
+                const requestBody = {
+                    model: "gpt-3.5-turbo",
+                    messages: [
+                        {
+                            role: "system",
+                            content: "You are a helpful assistant that summarizes text. Summarize the following text into 5 sentences, ignoring any boilerplate text that is irrelevant to the main content: " + response.text
+                        }
+                    ],
+                    max_tokens: 500
+                }
+                const LLMResponse = await fetch(url, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(requestBody)
+                })
+                console.log('Status:', LLMResponse.status);
+                console.log('Headers:', LLMResponse.headers);
+
+                const LLMData = await LLMResponse.json();
+                console.log('LLM response:', LLMData);
+                if (LLMData.error) {
+                    console.error('OpenAI error:', LLMData.error);
+                    throw new Error(LLMData.error.message);
+                }
+                if (!LLMData.choices || LLMData.choices.length === 0) {
+                    console.error('No choices in response:', LLMData);
+                    throw new Error('No response from OpenAI');
+                }
+                const summary = LLMData.choices[0].message.content;
+                
+                const summaryElement = document.getElementById('summary');
+                summaryElement.textContent = summary;
             } catch (error) {
                 console.error('Error:', error);
                 const summary = document.getElementById('summary');
