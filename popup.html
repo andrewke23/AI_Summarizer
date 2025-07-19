@@ -1,11 +1,15 @@
 <!DOCTYPE html>
     <html>
-        <style src="popup.css"></style>
         <head>
             <title id="title">AI Summarizer</title>
+            <link rel="stylesheet" href="popup.css">
         </head>
         <body>
             <h1>AI Summarizer</h1>
+            <div id="api-key-container">
+                <input type="password" id="api-key" placeholder="Enter your API key">
+                <button id="save-api-key">Save</button>
+            </div>
             <p id="description">Click "Summarize" to get a summary of the page!</p>
             <button id="summarize">Summarize</button>
             <div id="summary"></div>
