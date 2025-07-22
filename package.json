@@ -1,0 +1,17 @@
+{
+  "name": "chrome_extension",
+  "version": "1.0.0",
+  "description": "I created a Chrome extension that uses OpenAI's GPT model to summarize web page content.",
+  "main": "background.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "mongoose": "^8.16.4"
+  }
+}
