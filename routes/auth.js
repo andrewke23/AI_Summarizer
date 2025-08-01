@@ -5,7 +5,7 @@ const express = require('express');
 const router = express.Router();
 
 router.post('/register', async (req, res) => {
-    const { displayName, email, password } = req.body;
+    const { username, email, password } = req.body;
     const validationResult = validateRegister(req.body);
     if (!validationResult.success) {
         return res.status(400).json({ success: false, message: validationResult.message });
@@ -14,10 +14,10 @@ router.post('/register', async (req, res) => {
     if (existingUser) {
         return res.status(400).json({ success: false, message: 'Email already in use'})
     }
-    const user = new User({ displayName, email, password });
+    const user = new User({ username, email, password });
     await user.save();
     const token = jwt.sign(
-        { userId: user._id, displayName: user.displayName},
+        { userId: user._id, username: user.username},
         process.env.JWT_SECRET,
         {expiresIn: '7d'}
     );
@@ -26,12 +26,16 @@ router.post('/register', async (req, res) => {
 });
 
 router.post('/login', async (req, res) => {
+    console.log('Login request received:', req.body);
     const { email, password } = req.body;
+    console.log('Extracted email:', email);
     const validationResult = validateLogin(req.body);
+    console.log('Validation result:', validationResult);
     if (!validationResult.success) {
+        console.log('Validation failed:', validationResult.message);
         return res.status(400).json({ success: false, message: validationResult.message });
     }
-    const existingUser = await User.findOne({email: email});
+    const existingUser = await User.findOne({email: email}).select('+password');
     if (!existingUser) {
         return res.status(400).json({success: false, message: "Invalid email"});
     }
@@ -55,10 +59,15 @@ function validateLogin(input) {
             success: false,
             message: 'All fields are required'
         }
+    } else {
+        return {
+            success: true,
+            message: 'Login validated'
+        }
     }
 }
 function validateRegister(input) {
-    if (!input.displayName || !input.email || !input.password) {
+    if (!input.username || !input.email || !input.password) {
         return {
             success: false,
             message: 'All fields are required'

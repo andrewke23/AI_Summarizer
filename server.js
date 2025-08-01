@@ -7,8 +7,6 @@ const authRoutes = require('./routes/auth');
 const summaries = require('./routes/summaries');
 
 mongoose.connect(process.env.MONGODB_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
     serverSelectionTimeoutMS: 5000
 }).then(() => {
     console.log('Initial connection to MongoDB is successful');
@@ -44,3 +42,4 @@ app.listen(port, () => {
 });
 
 app.use('/api/auth', authRoutes);
+app.use('/api/summaries', summaries);

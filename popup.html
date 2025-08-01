@@ -6,13 +6,25 @@
         </head>
         <body>
             <h1>AI Summarizer</h1>
-            <div id="api-key-container">
-                <input type="password" id="api-key" placeholder="Enter your API key">
-                <button id="save-api-key">Save</button>
+            <div id="login">
+                <input type="text" id="login-email" placeholder="Enter your email">
+                <input type="password" id="login-password" placeholder="Enter your password">
+                <button id="login-btn">Login</button>
+                <button id="reg-instead">Register Instead</button>
             </div>
-            <p id="description">Click "Summarize" to get a summary of the page!</p>
-            <button id="summarize">Summarize</button>
-            <div id="summary"></div>
+            <div id="register" style="display: none;">
+                <input type="text" id="reg-username" placeholder="Create a username">
+                <input type="text" id="reg-email" placeholder="Enter your email">
+                <input type="password" id="reg-password" placeholder="Enter your password">
+                <button id="reg-btn">Register</button>
+                <button id="login-instead">Login Instead</button>
+            </div>
+            <div id="main" style="display: none;">
+                <p id="description">Click "Summarize" to get a summary of the page!</p>
+                <button id="summarize">Summarize</button>
+                <div id="summary"></div>
+                <button id="view-summaries">View Summaries</button>    
+            </div>
             <script src="popup.js"></script>
         </body>
     </html>
