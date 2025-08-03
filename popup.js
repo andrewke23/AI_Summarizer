@@ -144,3 +144,53 @@ if (summarizeButton) {
         }
     });
 }
+const viewSummariesButton = document.getElementById('view-summaries');
+if (viewSummariesButton) {
+    viewSummariesButton.addEventListener('click', async () => {
+        const data = await chrome.storage.local.get('auth_token');
+        if (!data.auth_token) {
+            alert('Please login first');
+            return;
+        }
+        
+        try {
+            const response = await fetch('http://localhost:5000/api/summaries', {
+                headers: {
+                    'Authorization': `Bearer ${data.auth_token}`
+                }
+            });
+            
+            const summariesData = await response.json();
+            
+            if (summariesData.success) {
+                displaySummaries(summariesData.summaries);
+                document.getElementById('summaries-container').style.display = 'block';
+            } else {
+                alert('Failed to load summaries');
+            }
+        } catch (error) {
+            console.error('Summaries error:', error);
+            alert('Failed to load summaries');
+        }
+    });
+}
+
+function displaySummaries(summaries) {
+    const container = document.getElementById('summaries-container');
+    
+    if (summaries.length === 0) {
+        container.innerHTML = '<p>No summaries yet. Create your first one!</p>';
+        return;
+    }
+    
+    const html = summaries.map(summary => `
+        <div class="summary-item">
+            <h4>${summary.title || 'Untitled'}</h4>
+            <p><strong>URL:</strong> ${summary.url}</p>
+            <p><strong>Summary:</strong> ${summary.summary}</p>
+            <small>Created: ${new Date(summary.createdAt).toLocaleDateString()}</small>
+        </div>
+    `).join('');
+    
+    container.innerHTML = html;
+}
