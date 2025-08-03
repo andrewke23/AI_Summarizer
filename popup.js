@@ -99,3 +99,48 @@ if (regBtn) {
     });
 }
 
+const summarizeButton = document.getElementById('summarize-btn');
+if (summarizeButton) {
+    summarizeButton.addEventListener('click', async () => {
+        const data = await chrome.storage.local.get('auth_token');
+        if(!data.auth_token) {
+            alert('Please login first');
+            return;
+        }
+        try {
+            const [tab] = await chrome.tabs.query({active: true, currentWindow: true});
+            if(!tab) {
+                alert('No active tab');
+                return;
+            }
+            const response = await chrome.tabs.sendMessage(tab.id, {action: "getText"});
+            if (!response || !response.text) {
+                alert('Could not extract text');
+                return;
+            }
+            const summaryResponse = await fetch('http://localhost:5000/api/summaries', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${data.auth_token}`
+                },
+                body: JSON.stringify({
+                    url: tab.url,
+                    title: tab.title,
+                    originalText: response.text.substring(0, 5000)
+                })
+            });
+            const summaryData = await summaryResponse.json();
+            
+            if (summaryData.success) {
+                document.getElementById('summary').textContent = summaryData.summary.summary;
+            } else {
+                alert(summaryData.message || 'Failed to save summary');
+            }
+            
+        } catch (error) {
+            console.error('Summarize error:', error);
+            alert('Failed to summarize page');
+        }
+    });
+}
