@@ -44,4 +44,22 @@ router.get('/', authenticateToken, async (req, res) => {
     }
 });
 
+router.delete('/:id', authenticateToken, async (req, res) => {
+    try {
+        // ensure users can only delete their own summaries
+        const summary = await Summary.findOneAndDelete({ 
+            _id: req.params.id, 
+            userId: req.user._id 
+        });
+        
+        if (!summary) {
+            return res.status(404).json({ success: false, message: 'Summary not found' });
+        }
+        
+        res.status(200).json({ success: true, message: 'Summary deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ success: false, message: 'Error deleting summary' });
+    }
+});
+
 module.exports = router;

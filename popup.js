@@ -175,6 +175,37 @@ if (viewSummariesButton) {
     });
 }
 
+// Logout functionality
+const logoutBtn = document.getElementById('logout-btn');
+if (logoutBtn) {
+    logoutBtn.addEventListener('click', async () => {
+        try {
+            // Clear the stored auth token
+            await chrome.storage.local.remove('auth_token');
+            
+            // Hide main window and show login window
+            mainWindow.style.display = 'none';
+            loginWindow.style.display = 'block';
+            
+            // Clear any displayed data
+            document.getElementById('summary').textContent = '';
+            document.getElementById('summaries-container').style.display = 'none';
+            document.getElementById('summaries-container').innerHTML = '';
+            
+            // Clear form fields
+            document.getElementById('login-email').value = '';
+            document.getElementById('login-password').value = '';
+            document.getElementById('reg-username').value = '';
+            document.getElementById('reg-email').value = '';
+            document.getElementById('reg-password').value = '';
+            
+        } catch (error) {
+            console.error('Logout error:', error);
+            alert('Logout failed. Try again');
+        }
+    });
+}
+
 function displaySummaries(summaries) {
     const container = document.getElementById('summaries-container');
     
@@ -189,8 +220,53 @@ function displaySummaries(summaries) {
             <p><strong>URL:</strong> ${summary.url}</p>
             <p><strong>Summary:</strong> ${summary.summary}</p>
             <small>Created: ${new Date(summary.createdAt).toLocaleDateString()}</small>
+            <button class="delete-btn" data-id="${summary._id}">Delete</button>
         </div>
     `).join('');
     
     container.innerHTML = html;
+    
+    // Add event listeners to delete buttons
+    const deleteButtons = container.querySelectorAll('.delete-btn');
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', async () => {
+            const summaryId = button.getAttribute('data-id');
+            if (confirm('Are you sure you want to delete this summary?')) {
+                await deleteSummary(summaryId);
+            }
+        });
+    });
+}
+
+async function deleteSummary(summaryId) {
+    const data = await chrome.storage.local.get('auth_token');
+    if (!data.auth_token) {
+        alert('Please login first');
+        return;
+    }
+    
+    try {
+        const response = await fetch(`http://localhost:5000/api/summaries/${summaryId}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ${data.auth_token}`
+            }
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            alert('Summary deleted successfully');
+            // Refresh the summaries list
+            const viewSummariesButton = document.getElementById('view-summaries');
+            if (viewSummariesButton) {
+                viewSummariesButton.click();
+            }
+        } else {
+            alert(result.message || 'Failed to delete summary');
+        }
+    } catch (error) {
+        console.error('Delete error:', error);
+        alert('Failed to delete summary');
+    }
 }
