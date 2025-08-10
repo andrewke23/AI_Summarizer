@@ -1,10 +1,17 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 require('dotenv').config();
 const app = express();
-const port = 5000;
+const port = process.env.PORT || 5000;
 const authRoutes = require('./routes/auth');
 const summaries = require('./routes/summaries');
+
+// Enable CORS for Chrome extension
+app.use(cors({
+    origin: true, // Allow all origins for Chrome extensions
+    credentials: true
+}));
 
 mongoose.connect(process.env.MONGODB_URI, {
     serverSelectionTimeoutMS: 5000
@@ -34,7 +41,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 app.get('/', (req, res) => {
-    res.send('Hello World');
+    res.send('AI Summarizer API is running!');
 });
 
 app.listen(port, () => {

@@ -1,1 +1,0 @@
-<div id="summaries-container" style="display: none;"></div> 

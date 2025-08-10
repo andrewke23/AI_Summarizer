@@ -52,7 +52,7 @@ function initializeApp() {
                     "email": email,
                     "password": password
                 };
-                const url = 'http://localhost:5000/api/auth/login';
+                const url = 'https://aisummarizer-production.up.railway.app/api/auth/login';
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: headers,
@@ -90,7 +90,7 @@ function initializeApp() {
                     "email": email,
                     "password": password
                 };
-                const url = 'http://localhost:5000/api/auth/register';
+                const url = 'https://aisummarizer-production.up.railway.app/api/auth/register';
                 const response = await fetch(url, {
                     method: 'POST',
                     headers: headers,
@@ -134,7 +134,7 @@ function initializeApp() {
                     return;
                 }
                 
-                const summaryResponse = await fetch('http://localhost:5000/api/summaries', {
+                const summaryResponse = await fetch('https://aisummarizer-production.up.railway.app/api/summaries', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -235,7 +235,7 @@ async function loadSummaries() {
     }
     
     try {
-        const response = await fetch('http://localhost:5000/api/summaries', {
+        const response = await fetch('https://aisummarizer-production.up.railway.app/api/summaries', {
             headers: {
                 'Authorization': `Bearer ${data.auth_token}`
             }
@@ -294,7 +294,7 @@ async function deleteSummary(summaryId) {
     }
     
     try {
-        const response = await fetch(`http://localhost:5000/api/summaries/${summaryId}`, {
+        const response = await fetch(`https://aisummarizer-production.up.railway.app/api/summaries/${summaryId}`, {
             method: 'DELETE',
             headers: {
                 'Authorization': `Bearer ${data.auth_token}`
