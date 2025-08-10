@@ -1,32 +1,57 @@
 <!DOCTYPE html>
-    <html>
-        <head>
-            <title id="title">AI Summarizer</title>
-            <link rel="stylesheet" href="popup.css">
-        </head>
-        <body>
-            <h1>AI Summarizer</h1>
-            <div id="login">
-                <input type="text" id="login-email" placeholder="Enter your email">
-                <input type="password" id="login-password" placeholder="Enter your password">
-                <button id="login-btn">Login</button>
-                <button id="reg-instead">Register Instead</button>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Summarizer</title>
+    <link rel="stylesheet" href="popup.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="extension-container">
+        <!-- Login View -->
+        <div id="loginView" class="tab-content">
+            <h3>Sign in to Summarizer AI</h3>
+            <input type="email" id="login-email" placeholder="Email">
+            <input type="password" id="login-password" placeholder="Password">
+            <button id="login-btn" class="primary-btn">Continue</button>
+            <button id="reg-instead" class="secondary-btn">Create Account</button>
+        </div>
+
+        <!-- Register View -->
+        <div id="registerView" class="tab-content hidden">
+            <h3>Create Account</h3>
+            <input type="text" id="reg-username" placeholder="Username">
+            <input type="email" id="reg-email" placeholder="Email">
+            <input type="password" id="reg-password" placeholder="Password">
+            <button id="reg-btn" class="primary-btn">Create Account</button>
+            <button id="login-instead" class="secondary-btn">Back to Login</button>
+        </div>
+
+        <!-- Main App View -->
+        <div id="appView" class="hidden">
+            <div class="tab-nav">
+                <button class="tab-button active" data-tab="summarize">Summarize</button>
+                <button class="tab-button" data-tab="history">History</button>
+                <button id="logout-btn" class="logout-btn">Logout</button>
             </div>
-            <div id="register" style="display: none;">
-                <input type="text" id="reg-username" placeholder="Create a username">
-                <input type="text" id="reg-email" placeholder="Enter your email">
-                <input type="password" id="reg-password" placeholder="Enter your password">
-                <button id="reg-btn">Register</button>
-                <button id="login-instead">Login Instead</button>
+            
+            <!-- Summarize Tab -->
+            <div class="tab-content" id="summarizeContent">
+                <h3>AI Page Summarizer</h3>
+                <p>Get a quick, 5-sentence summary of the content on this webpage.</p>
+                <button id="summarize-btn" class="primary-btn">Generate Summary</button>
+                <div id="summary" class="summary-display"></div>
             </div>
-            <div id="main" style="display: none;">
-                <button id="logout-btn">Logout</button>
-                <p id="description">Click "Summarize" to get a summary of the page!</p>
-                <button id="summarize-btn">Summarize</button>
-                <div id="summary"></div>
-                <button id="view-summaries">View Summaries</button>  
-                <div id="summaries-container" style="display: none;"></div>
+    
+            <!-- History Tab -->
+            <div class="tab-content hidden" id="historyContent">
+                <h3>Recent Summaries</h3>
+                <div id="summaries-container"></div>
             </div>
-            <script src="popup.js"></script>
-        </body>
-    </html>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
