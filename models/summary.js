@@ -39,7 +39,8 @@ const summarySchema = new mongoose.Schema({
         maxLength: [50000, 'Error: original text must be less than 50000 characters']
     },
     userId: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
         required: true
     },
     tags: {

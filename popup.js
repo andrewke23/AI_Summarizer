@@ -130,7 +130,7 @@ function initializeApp() {
                 
                 const response = await chrome.tabs.sendMessage(tab.id, {action: "getText"});
                 if (!response || !response.text) {
-                    alert('Could not extract text');
+                    alert('Could not extract text from this page. Make sure you are on a webpage with content.');
                     return;
                 }
                 
